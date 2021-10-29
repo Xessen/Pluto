@@ -2,12 +2,7 @@ import tradingview_ta
 from tradingview_ta import Exchange, Interval, TA_Handler
 import config
 from binance.client import Client
-
-def precision_finder(symbol):
-    response=requests.get("https://api.binance.com/api/v3/exchangeInfo")
-
-    return next(element for element in response.json()['symbols'] if element['symbol']==symbol)['baseAssetPrecision']
-
+from decimal import *
 class PSAR_Strategy():
     def __init__(self,money,symbols,interval):
         self.money=money
@@ -43,7 +38,10 @@ class PSAR_Strategy():
         STOP_LOSS=P_SAR
         LIMIT=CURR_PRICE+1.5(CURR_PRICE-STOP_LOSS)
 
-        return STOP_LOSS,LIMIT
+        precision=len(str(CURR_PRICE).split('.')[1])
+        return round(Decimal(STOP_LOSS),precision),round(Decimal(LIMIT),precision)
+
+
     def get_oco_quantity(self,symbol):
         count=0
         balances=self.client.get_account()['balances']
@@ -61,7 +59,8 @@ class PSAR_Strategy():
                     break    
         else:
             return int(x)
-        return f"{float(x.split('.')[0]+'.'+x.split('.')[1][0:count+2]):.{count+2}f}"
+        
+        return Decimal(x.split('.')[0]+'.'+x.split('.')[1][0:count+2])
 
     def set_sl_limit(self,symbol,p_sar,curr_price):
         qty=self.get_oco_quantity(symbol=symbol)
