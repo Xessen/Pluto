@@ -61,3 +61,7 @@ def set_sl_limit(symbol,p_sar,curr_price):
 #print(float(0.99 * (float(0.0015))))
 #print(get_oco_quantity("SHIBUSDT"))
 #print(sl_limit(34765.74,34594.16))
+orders=client.get_open_orders()
+
+
+print(orders)

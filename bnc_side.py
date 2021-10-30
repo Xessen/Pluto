@@ -1,9 +1,10 @@
 import numpy
 from decimal import *
-
-
-x="10.000000"
-count=6
-
-print(Decimal(x.split('.')[0]+'.'+x.split('.')[1][0:count+2]))
-
+a=0
+while a<20:
+    print("")
+    for i in range(1,10):
+        print("b")
+        if i==4:
+            break
+    a+=1

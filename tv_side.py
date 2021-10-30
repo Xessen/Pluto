@@ -3,9 +3,13 @@ from tradingview_ta import Exchange, Interval, TA_Handler
 import config
 from binance.client import Client
 from decimal import *
+import time
+
+
 class PSAR_Strategy():
-    def __init__(self,money,symbols,interval):
-        self.money=money
+    def __init__(self,symbols,interval):
+        #daha sonra mevcut paranın yüzde kaçının kullanılacağını seç
+        #self.money=money
         self.symbols=symbols
         self.interval=interval
         self.client=Client(config.apiKey,config.apiSecurity)
@@ -13,11 +17,10 @@ class PSAR_Strategy():
 
 
 
-    def get_signal(self,c_symbol,current_trades):
+    def get_signal(self,c_symbol):
         handler= TA_Handler(symbol=c_symbol,exchange="binance",screener="crypto",interval=self.interval,timeout=None)
         anal=handler.get_analysis()
 
-        is_unique=c_symbol in current_trades
 
         OPENING_PRICE=anal.indicators['open']
         EMA=anal.indicators['EMA200']
@@ -36,7 +39,7 @@ class PSAR_Strategy():
 
     def sl_limit(self,P_SAR,CURR_PRICE):
         STOP_LOSS=P_SAR
-        LIMIT=CURR_PRICE+1.5(CURR_PRICE-STOP_LOSS)
+        LIMIT=CURR_PRICE+1.5*(CURR_PRICE-STOP_LOSS)
 
         precision=len(str(CURR_PRICE).split('.')[1])
         return round(Decimal(STOP_LOSS),precision),round(Decimal(LIMIT),precision)
@@ -70,12 +73,28 @@ class PSAR_Strategy():
 
     def buy_exchange(self,symbol):
         symbol=symbol
-
-        self.client.order_market_buy(symbol=symbol,quoteOrderQty=self.money)
-        self.money=0
+        money=self.get_oco_quantity("USDTUSDT")
+        self.client.order_market_buy(symbol=symbol,quoteOrderQty=money)
 
     def start(self,symbol):
         
+        while True:
+            if len(self.client.get_open_orders)==0:
+                for symbol in self.symbols:
+                    signal,pSar,currPrice=self.get_signal(symbol)
+                    if signal:
+                        try:
+                            self.buy_exchange(symbol)
+                            print(f"{symbol} has been succesfully bought!")
+                        except:
+                            print(f"An error occured with {symbol} purchase!")
+                        try:    
+                            self.set_sl_limit(symbol,pSar,currPrice)
+                            print(f"sl/limit order succesfully placed for {symbol}!")
+                        except:
+                            print(f"An error occured with sl/limit order of {symbol}!")
+            
+            time.sleep(920)
+            
 
-        self.client.order_oco_sell(symbol=symbol,)
 
