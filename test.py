@@ -92,11 +92,12 @@ def get_signal(c_symbol):
 #print(client.get_symbol_info("ALPACAUSDT"))
 #set_sl_limit("KNCUSDT",1.796,1.915)
 #print(float(0.99 * (float(0.0015))))
-print(get_oco_quantity("ZRXUSDT"))
-set_sl_limit("ZRXUSDT",1.3065,1.4462)
+#print(get_oco_quantity("ZRXUSDT"))
+#set_sl_limit("ZRXUSDT",1.3065,1.4462)
 #print(sl_limit(34765.74,34594.16))
 #orders=client.get_open_orders()
-
+a="123.00"
+print(Decimal(a.split('.')[0]))
 
 
 #print(orders)
