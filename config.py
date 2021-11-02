@@ -1,2 +1,0 @@
-apiKey="SiATiW6agcTn9RMqnl0ioEpVLv4nhwQ6d0eUcoL8IkVZGXIicDcm4MlHZPPbiwyv"
-apiSecurity="uqiFyIh6Z6IuTlAUdi25oq0uypHDWw6m2s9tk7cCUCgFZvcavCbewAdi4cz8F4ta"
